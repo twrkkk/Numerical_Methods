@@ -7,14 +7,14 @@ namespace Task1
         static void Main(string[] args)
         {
             string[] s = File.ReadAllLines("1.txt");
-            int size = s.Length;
-            int[] diagonal_h, diagonal, diagonal_l, k_column, k1_column;
+            int size = (s.Length - 1) / 2;
+            int[] diagonal_h, diagonal, diagonal_l, k_column, k1_column, answers;
             int k = 0;
             bool correct = false;
 
             EnterKHandler(size, correct, k);
-            TextFileToMatrix(s, size, k, out diagonal_h, out diagonal, out diagonal_l, out k_column, out k1_column);
-            MatrixToTextFile(size, k, diagonal_h, diagonal, diagonal_l, k_column, k1_column);
+            TextFileToMatrix(s, size, k, out diagonal_h, out diagonal, out diagonal_l, out k_column, out k1_column, out answers);
+            MatrixToTextFile(size, k, diagonal_h, diagonal, diagonal_l, k_column, k1_column, answers);
         }
 
         private static void EnterKHandler(int size, bool correct, int k)
@@ -37,14 +37,15 @@ namespace Task1
             --k;
         }
 
-        private static void TextFileToMatrix(string[] s, int size, int k, out int[] diagonal_h, out int[] diagonal, out int[] diagonal_l, out int[] k_column, out int[] k1_column)
+        private static void TextFileToMatrix(string[] s, int size, int k, out int[] diagonal_h, out int[] diagonal, out int[] diagonal_l, out int[] k_column, out int[] k1_column, out int[] answers)
         {
             diagonal_h = new int[size - 1];
             diagonal = new int[size];
             diagonal_l = new int[size - 1];
             k_column = new int[size];
             k1_column = new int[size];
-            for (int i = 0; i < s.Length; ++i)
+            answers = new int[size];
+            for (int i = 0; i < size; ++i)
             {
                 string[] str = s[i].Split(new char[] { ' ', '\t' });
                 diagonal[i] = int.Parse(str[size - i - 1]);
@@ -55,9 +56,13 @@ namespace Task1
                 if (i > 0 && size - i > 0)
                     diagonal_l[i - 1] = int.Parse(str[size - i]);
             }
+
+            int j = 0;
+            for(int i = size+1; i < s.Length;++i)
+                answers[j++] = int.Parse(s[i]);
         }
 
-        private static void MatrixToTextFile(int size, int k, int[] diagonal_h, int[] diagonal, int[] diagonal_l, int[] k_column, int[] k1_column)
+        private static void MatrixToTextFile(int size, int k, int[] diagonal_h, int[] diagonal, int[] diagonal_l, int[] k_column, int[] k1_column, int[] answers)
         {
             using (StreamWriter sw = new StreamWriter("2.txt", false))
             {
@@ -78,6 +83,11 @@ namespace Task1
 
                     sw.WriteLine(res);
                 }
+
+                sw.WriteLine();
+
+                for (int i = 0; i < size; ++i)
+                    sw.WriteLine(answers[i]);
             }
         }
     }
