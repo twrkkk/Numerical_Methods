@@ -12,12 +12,12 @@ namespace Task1
             int k = 0;
             bool correct = false;
 
-            EnterKHandler(size, correct, k);
+            EnterKHandler(size, correct, ref k);
             TextFileToMatrix(s, size, k, out diagonal_h, out diagonal, out diagonal_l, out k_column, out k1_column, out answers);
             MatrixToTextFile(size, k, diagonal_h, diagonal, diagonal_l, k_column, k1_column, answers);
         }
 
-        private static void EnterKHandler(int size, bool correct, int k)
+        private static void EnterKHandler(int size, bool correct, ref int k)
         {
             do
             {
@@ -84,10 +84,10 @@ namespace Task1
                     sw.WriteLine(res);
                 }
 
-                sw.WriteLine();
+                //sw.WriteLine();
 
-                for (int i = 0; i < size; ++i)
-                    sw.WriteLine(answers[i]);
+                //for (int i = 0; i < size; ++i)
+                //    sw.WriteLine(answers[i]);
             }
         }
     }
