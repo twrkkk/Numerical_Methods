@@ -1,22 +1,44 @@
-﻿using System.Text;
+﻿using NumericalMethods.Core.Utils.RandomProviders;
+using NumericalMethods.Core.Extensions;
+using System;
+using System.Text;
+using NumericalMethods.Core.Utils.Interfaces;
+using NumericalMethods.Core.Utils;
 
 namespace Task1
 {
-    internal class Program
+    public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            string[] s = File.ReadAllLines("1.txt");
-            int size = (s.Length - 1) / 2;
-            int[] diagonal_h, diagonal, diagonal_l, k_column, k1_column, answers;
-            int k = 0;
-            bool correct = false;
+            const int TestCount = 3;
+            var testCases = new (int n, int minValue, int maxValue)[]
+            {
+                (10, -10, 10),
+                (10, -100, 100),
+                (10, -1000, 1000),
+                (100, -10, 10),
+                (100, -100, 100),
+                (100, -1000, 1000),
+                (1000, -10, 10),
+                (1000, -100, 100),
+                (1000, -1000, 1000)
+            };
 
-            EnterKHandler(size, correct, ref k);
-            TextFileToMatrix(s, size, k, out diagonal_h, out diagonal, out diagonal_l, out k_column, out k1_column, out answers);
-            MatrixToTextFile(size, k, diagonal_h, diagonal, diagonal_l, k_column, k1_column, answers);
+            foreach (var (count, minValue, maxValue) in testCases)
+            {
+                IReadOnlyList<(double UnitAccuracy, double RandomAccuracy)> accuracies = Enumerable
+                    .Range(1, TestCount)
+                    .Select(_ => FindAccuracies(count, minValue, maxValue))
+                    .ToArray();
+
+                Console.WriteLine($"N = {count}; Min = {minValue}; Max = {maxValue};");
+                Console.WriteLine($"Средняя относительная погрешность системы: {accuracies.Select(x => x.UnitAccuracy).Average()}");
+                Console.WriteLine($"Среднее значение оценки точности: {accuracies.Select(x => x.RandomAccuracy).Average()}");
+            }
+
+            Console.ReadKey(true);
         }
-
         private static void EnterKHandler(int size, bool correct, ref int k)
         {
             do
@@ -37,58 +59,30 @@ namespace Task1
             --k;
         }
 
-        private static void TextFileToMatrix(string[] s, int size, int k, out int[] diagonal_h, out int[] diagonal, out int[] diagonal_l, out int[] k_column, out int[] k1_column, out int[] answers)
+        const double NonZeroEps = 1e-5;
+
+        static readonly IRangedRandomProvider<double> _random = ((IRangedRandomProvider<double>)new DoubleRandomProvider(NonZeroEps)).NotDefault();
+
+        static (double UnitAccuracy, double RandomAccuracy) FindAccuracies(int count, double minValue, double maxValue)
         {
-            diagonal_h = new int[size - 1];
-            diagonal = new int[size];
-            diagonal_l = new int[size - 1];
-            k_column = new int[size];
-            k1_column = new int[size];
-            answers = new int[size];
-            for (int i = 0; i < size; ++i)
-            {
-                string[] str = s[i].Split(new char[] { ' ', '\t' });
-                diagonal[i] = int.Parse(str[size - i - 1]);
-                k_column[i] = int.Parse(str[k]);
-                k1_column[i] = int.Parse(str[k + 1]);
-                if (size - i - 2 >= 0)
-                    diagonal_h[i] = int.Parse(str[size - i - 2]);
-                if (i > 0 && size - i > 0)
-                    diagonal_l[i - 1] = int.Parse(str[size - i]);
-            }
+            _ = count < 0 ? throw new ArgumentOutOfRangeException(nameof(count), "The number of elements must not be negative.") : true;
 
-            int j = 0;
-            for(int i = size+1; i < s.Length;++i)
-                answers[j++] = int.Parse(s[i]);
-        }
+            double[,] matrixWithoutRightSide = _random.GenerateMatrix(count, count, minValue, maxValue);
 
-        private static void MatrixToTextFile(int size, int k, int[] diagonal_h, int[] diagonal, int[] diagonal_l, int[] k_column, int[] k1_column, int[] answers)
-        {
-            using (StreamWriter sw = new StreamWriter("2.txt", false))
-            {
-                for (int i = 0; i < size; ++i)
-                {
-                    int[] row = new int[size];
-                    row[k] = k_column[i];
-                    row[k + 1] = k1_column[i];
-                    row[size - i - 1] = diagonal[i];
-                    if (size - i - 2 >= 0)
-                        row[size - i - 2] = diagonal_h[i];
-                    if (i > 0 && size - i > 0)
-                        row[size - i] = diagonal_l[i - 1];
+            IReadOnlyList<double> expectRandomSolution = _random.Repeat(count, minValue, maxValue).ToArray();
+            IReadOnlyList<double> expectUnitSolution = Enumerable.Repeat(1, count).Select(x => (double)x).ToArray();
 
-                    var builder = new StringBuilder();
-                    Array.ForEach(row, x => builder.Append(x + "\t"));
-                    var res = builder.ToString();
+            var rightSideBuilder = new RightSideBuilder(matrixWithoutRightSide);
+            var randomRightSide = rightSideBuilder.Build(expectRandomSolution);
+            var unitRightSide = rightSideBuilder.Build(expectUnitSolution);
 
-                    sw.WriteLine(res);
-                }
+            var randomMatrix = new FirstTaskMatrix(matrixWithoutRightSide, randomRightSide);
+            var actualRandomSolution = randomMatrix.Solve();
 
-                sw.WriteLine();
+            var unitMatrix = new FirstTaskMatrix(matrixWithoutRightSide, unitRightSide);
+            var actualUnitSolution = unitMatrix.Solve();
 
-                for (int i = 0; i < size; ++i)
-                    sw.WriteLine(answers[i]);
-            }
+            return (AccuracyUtils.CalculateAccuracy(expectUnitSolution, actualUnitSolution, NonZeroEps), AccuracyUtils.CalculateAccuracy(expectRandomSolution, actualRandomSolution, NonZeroEps));
         }
     }
 }
