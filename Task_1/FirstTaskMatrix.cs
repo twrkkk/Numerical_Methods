@@ -60,8 +60,8 @@ namespace Task1
             for (int i = 0; i < Size; i++)
             {
                 _b[i] = matrix[i, Size - i - 1];
-                _e[i] = matrix[i, 5];
-                _d[i] = matrix[i, 6];
+                _e[i] = matrix[i, Size - 7];
+                _d[i] = matrix[i, Size - 6];
                 if (Size - i - 2 >= 0)
                     _c[i] = matrix[i, Size - i - 2];
                 if (i > 0 && Size - i > 0)
@@ -293,8 +293,8 @@ namespace Task1
                 PrintArrays();
 
                 SecondPhase();
-                PrintArrays();
                 Console.WriteLine("SecondPhase");
+                PrintArrays();
 
                 ThirdPhase();
                 PrintArrays();

@@ -24,11 +24,11 @@ namespace Task1
                 if (i > 0 && rowsCount - i > 0)
                     matrix[rowsCount - i, i] = random.Next(minValue, maxValue);
                 //e
-                matrix[i, 5] = random.Next(minValue, maxValue);
+                matrix[i, rowsCount - 6] = random.Next(minValue, maxValue);
                 //d
-                matrix[i, 6] = random.Next(minValue, maxValue);
+                matrix[i, rowsCount - 7] = random.Next(minValue, maxValue);
             }
-            
+
             return matrix;
         }
     }
