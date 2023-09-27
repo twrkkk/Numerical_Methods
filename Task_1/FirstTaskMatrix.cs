@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,6 +67,16 @@ namespace Task1
                 if (i > 0 && Size - i > 0)
                     _a[i - 1] = matrix[i, Size - i];
             }
+
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    string line = "";
+            //    for (int j = 0; j < 10; j++)
+            //    {
+            //        line += string.Format("{0:f1}", matrix[i, j]) + "\t";
+            //    }
+            //    Console.WriteLine(line);
+            //}
 
             for (int i = 0; i < Size; i++)
                 _f[i] = rightSight[i];
@@ -276,15 +287,68 @@ namespace Task1
             if (!_solved)
             {
                 _solved = true;
+
                 FirstPhase();
+                Console.WriteLine("FirstPhase");
+                PrintArrays();
+
                 SecondPhase();
+                PrintArrays();
+                Console.WriteLine("SecondPhase");
+
                 ThirdPhase();
+                PrintArrays();
+                Console.WriteLine("ThirdPhase");
+
                 FourthPhase();
+                PrintArrays();
+                Console.WriteLine("FourthPhase");
+
                 FifthPhase();
+                PrintArrays();
+                Console.WriteLine("FifthPhase");
+
                 CalculatePhase();
+                PrintArrays();
+                Console.WriteLine("CalculatePhase");
             }
 
             return _result;
+        }
+
+        private void PrintArrays()
+        {
+            Console.WriteLine("C");
+            string line2 = "";
+            for (int i = 0; i < 9; i++)
+                line2 += string.Format("{0:f1}", _c[i]) + "\t";
+            Console.WriteLine(line2);
+
+            Console.WriteLine("B");
+            string line3 = "";
+            for (int i = 0; i < 10; i++)
+                line3 += string.Format("{0:f1}", _b[i]) + "\t";
+            Console.WriteLine(line3);
+
+            Console.WriteLine("A");
+            string line4 = "";
+            for (int i = 0; i < 9; i++)
+                line4 += string.Format("{0:f1}", _a[i]) + "\t";
+            Console.WriteLine(line4);
+
+            Console.WriteLine("D");
+            string line5 = "";
+            for (int i = 0; i < 10; i++)
+                line5 += string.Format("{0:f1}", _d[i]) + "\t";
+            Console.WriteLine(line5);
+
+            Console.WriteLine("E");
+            string line6 = "";
+            for (int i = 0; i < 10; i++)
+                line6 += string.Format("{0:f1}", _e[i]) + "\t";
+            Console.WriteLine(line6);
+
+
         }
     }
 }
