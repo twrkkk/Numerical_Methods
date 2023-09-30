@@ -56,7 +56,7 @@ namespace NumericalMethods.Core.Extensions
             _ = randomProvider ?? throw new ArgumentNullException(nameof(randomProvider));
             _ = count < 0 ? throw new ArgumentNullException("The number of repetitions must be positive.", nameof(count)) : true;
 
-            return Enumerable.Range(0, count).Select(x => randomProvider.Next(minValue, maxValue));
+            return Enumerable.Range(0,count).Select(x => randomProvider.Next(minValue, maxValue));
         }
     }
 }

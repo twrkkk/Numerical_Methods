@@ -289,28 +289,28 @@ namespace Task1
                 _solved = true;
 
                 FirstPhase();
-                Console.WriteLine("FirstPhase");
-                PrintArrays();
+               // Console.WriteLine("FirstPhase");
+               // PrintArrays();
 
                 SecondPhase();
-                Console.WriteLine("SecondPhase");
-                PrintArrays();
+              //  Console.WriteLine("SecondPhase");
+               // PrintArrays();
 
                 ThirdPhase();
-                PrintArrays();
-                Console.WriteLine("ThirdPhase");
+              //  PrintArrays();
+               // Console.WriteLine("ThirdPhase");
 
                 FourthPhase();
-                PrintArrays();
-                Console.WriteLine("FourthPhase");
+               // PrintArrays();
+               // Console.WriteLine("FourthPhase");
 
                 FifthPhase();
-                PrintArrays();
-                Console.WriteLine("FifthPhase");
+               // PrintArrays();
+               // Console.WriteLine("FifthPhase");
 
                 CalculatePhase();
-                PrintArrays();
-                Console.WriteLine("CalculatePhase");
+               // PrintArrays();
+               // Console.WriteLine("CalculatePhase");
             }
 
             return _result;
