@@ -78,10 +78,10 @@ namespace Task1
 
             var randomMatrix = new FirstTaskMatrix(matrixWithoutRightSide, randomRightSide);
             var actualRandomSolution = randomMatrix.Solve();
-            double[] test = new double[count];
+            double[] expRandomSolution = new double[count];
             for (int i = count - 1; i >= 0; i--)
-                test[i] = actualRandomSolution[count - i - 1];
-            actualRandomSolution = test;
+                expRandomSolution[i] = actualRandomSolution[count - i - 1];
+            actualRandomSolution = expRandomSolution;
             var unitMatrix = new FirstTaskMatrix(matrixWithoutRightSide, unitRightSide);
             var actualUnitSolution = unitMatrix.Solve();
             //return (0, 0);
