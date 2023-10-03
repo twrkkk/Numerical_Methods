@@ -4,6 +4,7 @@ using System;
 using System.Text;
 using NumericalMethods.Core.Utils.Interfaces;
 using NumericalMethods.Core.Utils;
+using System.Drawing;
 
 namespace Task1
 {
@@ -15,14 +16,14 @@ namespace Task1
             var testCases = new (int n, int minValue, int maxValue)[]
             {
                 (10, -10, 10),
-                //(10, -100, 100),
-                //(10, -1000, 1000),
-                //(100, -10, 10),
-                //(100, -100, 100),
-                //(100, -1000, 1000),
-                //(1000, -10, 10),
-                //(1000, -100, 100),
-                //(1000, -1000, 1000)
+                (10, -100, 100),
+                (10, -1000, 1000),
+                (100, -10, 10),
+                (100, -100, 100),
+                (100, -1000, 1000),
+                (1000, -10, 10),
+                (1000, -100, 100),
+                (1000, -1000, 1000)
             };
 
             foreach (var (count, minValue, maxValue) in testCases)
@@ -67,34 +68,41 @@ namespace Task1
         {
             _ = count < 0 ? throw new ArgumentOutOfRangeException(nameof(count), "The number of elements must not be negative.") : true;
 
-            double[,] matrixWithoutRightSide = _random.GenerateMatrix(count, count, minValue, maxValue);
-            //   {
-            //    { 0.0,0.0,0.0,0.0,0.0,7.8,9.9,0.0,9.0,-8.9 },
-            //    { 0.0,0.0,0.0,0.0,0.0,-4.3,-7.6,8.7,0.2,-5.5},
-            //    { 0.0,0.0,0.0,0.0,0.0,6.2,-1.8,2.2,3.7,0.0},
-            //    { 0.0,0.0,0.0,0.0,0.0,-9.6,-0.9,4.5,0.0,0.0},
-            //    { 0.0,0.0,0.0,0.0,0.0,-5.2,-9.7,0.0,0.0,0.0},
-            //    { 0.0,0.0,0.0,-6.1,3.8,2.9,6.0,0.0,0.0,0.0},
-            //    { 0.0,0.0,7.6,3.7,2.2,-8.2,-8.6,0.0,0.0,0.0},
-            //    { 0.0,-9.2,7.8,6.2,0.0,-2.7,-0.2,0.0,0.0,0.0},
-            //    { 6.2,5.2,1.0,0.0,0.0,-4.7,7.3,0.0,0.0,0.0},
-            //    { 6.6,-8.1,0.0,0.0,0.0,-3.9,6.0,0.0,0.0,0.0}
-            //};
+            string[] s = File.ReadAllLines("1.txt");
+            int Size = (s.Length - 1) / 2;
+            double[,] matrix = new double[10,10];
+            double[] right = new double[10];
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    var str = s[i].Split('\t').Select(x => double.Parse(x)).ToArray();
+                    matrix[i,j] = str[j];   
+                }
+            }
+
+            int k = 0;
+            for (int i = Size+1; i < s.Length; i++)
+                right[k++] = double.Parse(s[i]);
+
+            //double[,] matrixWithoutRightSide = _random.GenerateMatrix(count, count, minValue, maxValue);
 
             IReadOnlyList<double> expectRandomSolution = _random.Repeat(count, minValue, maxValue).ToArray();
             IReadOnlyList<double> expectUnitSolution = Enumerable.Repeat(1, count).Select(x => (double)x).ToArray();
 
-            var rightSideBuilder = new RightSideBuilder(matrixWithoutRightSide);
-            var randomRightSide = rightSideBuilder.Build(expectRandomSolution);
+            var rightSideBuilder = new RightSideBuilder(matrix);
+            var randomRightSide = rightSideBuilder.Build(right);
             var unitRightSide = rightSideBuilder.Build(expectUnitSolution);
 
-            var randomMatrix = new FirstTaskMatrix(matrixWithoutRightSide, randomRightSide);
+            //var randomMatrix = new FirstTaskMatrix(matrixWithoutRightSide, randomRightSide);
+            var randomMatrix = new FirstTaskMatrix(matrix, right);
             var actualRandomSolution = randomMatrix.Solve();
 
             //var unitMatrix = new FirstTaskMatrix(matrixWithoutRightSide, unitRightSide);
-            //var actualUnitSolution = unitMatrix.Solve();
-            return (0, 0);
-            //return (AccuracyUtils.CalculateAccuracy(expectUnitSolution, actualUnitSolution, NonZeroEps), AccuracyUtils.CalculateAccuracy(expectRandomSolution, actualRandomSolution, NonZeroEps));
+            var unitMatrix = new FirstTaskMatrix("1.txt");
+            var actualUnitSolution = unitMatrix.Solve();
+            return (AccuracyUtils.CalculateAccuracy(expectUnitSolution, actualUnitSolution, NonZeroEps), 
+                AccuracyUtils.CalculateAccuracy(expectRandomSolution, actualRandomSolution, NonZeroEps));
         }
     }
 }

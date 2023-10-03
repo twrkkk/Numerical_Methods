@@ -32,8 +32,8 @@ namespace Task1
             {
                 string[] str = s[i].Split(new char[] { ' ', '\t' });
                 _b[i] = int.Parse(str[Size - i - 1]);
-                _e[i] = int.Parse(str[5]);
-                _d[i] = int.Parse(str[6]);
+                _e[i] = int.Parse(str[Size - 7]);
+                _d[i] = int.Parse(str[Size - 6]);
                 if (Size - i - 2 >= 0)
                     _c[i] = int.Parse(str[Size - i - 2]);
                 if (i > 0 && Size - i > 0)
@@ -289,28 +289,28 @@ namespace Task1
                 _solved = true;
 
                 FirstPhase();
-                Console.WriteLine("FirstPhase");
-                PrintArrays();
+                //Console.WriteLine("FirstPhase");
+                //PrintArrays();
 
                 SecondPhase();
-                Console.WriteLine("SecondPhase");
-                PrintArrays();
+                //Console.WriteLine("SecondPhase");
+                //PrintArrays();
 
                 ThirdPhase();
-                PrintArrays();
-                Console.WriteLine("ThirdPhase");
+                //PrintArrays();
+                //Console.WriteLine("ThirdPhase");
 
                 FourthPhase();
-                PrintArrays();
-                Console.WriteLine("FourthPhase");
+                //PrintArrays();
+                //Console.WriteLine("FourthPhase");
 
                 FifthPhase();
-                PrintArrays();
-                Console.WriteLine("FifthPhase");
+                //PrintArrays();
+                //Console.WriteLine("FifthPhase");
 
                 CalculatePhase();
-                PrintArrays();
-                Console.WriteLine("CalculatePhase");
+                //PrintArrays();
+                //Console.WriteLine("CalculatePhase");
             }
 
             return _result;
