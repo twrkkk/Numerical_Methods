@@ -15,36 +15,6 @@ namespace Task1
 
         public IReadOnlyList<double> Result => _result;
 
-        public FirstTaskMatrix(string fileName)
-        {
-            string[] s = File.ReadAllLines(fileName);
-            Size = (s.Length - 1) / 2;
-
-            _c = new double[Size - 1];
-            _b = new double[Size];
-            _a = new double[Size - 1];
-            _e = new double[Size];
-            _d = new double[Size];
-            _f = new double[Size];
-            _result = new double[Size];
-
-            for (int i = 0; i < Size; ++i)
-            {
-                string[] str = s[i].Split(new char[] { ' ', '\t' });
-                _b[i] = int.Parse(str[Size - i - 1]);
-                _e[i] = int.Parse(str[Size - 7]);
-                _d[i] = int.Parse(str[Size - 6]);
-                if (Size - i - 2 >= 0)
-                    _c[i] = int.Parse(str[Size - i - 2]);
-                if (i > 0 && Size - i > 0)
-                    _a[i - 1] = int.Parse(str[Size - i]);
-            }
-
-            int j = 0;
-            for (int i = Size + 1; i < s.Length; ++i)
-                _f[j++] = int.Parse(s[i]);
-        }
-
         public FirstTaskMatrix(double[,] matrix, IReadOnlyList<double> rightSight)
         {
             Size = matrix.GetLength(0);
@@ -68,16 +38,6 @@ namespace Task1
                     _a[i - 1] = matrix[i, Size - i];
             }
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    string line = "";
-            //    for (int j = 0; j < 10; j++)
-            //    {
-            //        line += string.Format("{0:f1}", matrix[i, j]) + "\t";
-            //    }
-            //    Console.WriteLine(line);
-            //}
-
             for (int i = 0; i < Size; i++)
                 _f[i] = rightSight[i];
         }
@@ -89,8 +49,8 @@ namespace Task1
                 for (int i = 0; i < Size; ++i)
                 {
                     double[] row = new double[Size];
-                    row[5] = _e[i];
-                    row[6] = _d[i];
+                    row[Size - 7] = _e[i];
+                    row[Size - 6] = _d[i];
                     row[Size - i - 1] = _b[i];
                     if (Size - i - 2 >= 0)
                         row[Size - i - 2] = _c[i];
