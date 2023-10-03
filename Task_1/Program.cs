@@ -1,7 +1,5 @@
 ﻿using NumericalMethods.Core.Utils.RandomProviders;
 using NumericalMethods.Core.Extensions;
-using System;
-using System.Text;
 using NumericalMethods.Core.Utils.Interfaces;
 using NumericalMethods.Core.Utils;
 using System.Drawing;
@@ -17,13 +15,13 @@ namespace Task1
             {
                 (10, -10, 10),
                 (10, -100, 100),
-                (10, -1000, 1000),
-                (100, -10, 10),
-                (100, -100, 100),
-                (100, -1000, 1000),
-                (1000, -10, 10),
-                (1000, -100, 100),
-                (1000, -1000, 1000)
+                //(10, -1000, 1000),
+                //(100, -10, 10),
+                //(100, -100, 100),
+                //(100, -1000, 1000),
+                //(1000, -10, 10),
+                //(1000, -100, 100),
+                //(1000, -1000, 1000)
             };
 
             foreach (var (count, minValue, maxValue) in testCases)
@@ -68,26 +66,11 @@ namespace Task1
         {
             _ = count < 0 ? throw new ArgumentOutOfRangeException(nameof(count), "The number of elements must not be negative.") : true;
 
-            string[] s = File.ReadAllLines("1.txt");
-            int Size = (s.Length - 1) / 2;
-            double[,] matrix = new double[10,10];
-            double[] right = new double[10];
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    var str = s[i].Split('\t').Select(x => double.Parse(x)).ToArray();
-                    matrix[i,j] = str[j];   
-                }
-            }
+            double[,] matrixWithoutRightSide = _random.GenerateMatrix(count, count, minValue, maxValue);
 
-            int k = 0;
-            for (int i = Size+1; i < s.Length; i++)
-                right[k++] = double.Parse(s[i]);
-
-            //double[,] matrixWithoutRightSide = _random.GenerateMatrix(count, count, minValue, maxValue);
 
             IReadOnlyList<double> expectRandomSolution = _random.Repeat(count, minValue, maxValue).ToArray();
+          
             IReadOnlyList<double> expectUnitSolution = Enumerable.Repeat(1, count).Select(x => (double)x).ToArray();
 
             var rightSideBuilder = new RightSideBuilder(matrix);
@@ -97,10 +80,23 @@ namespace Task1
             //var randomMatrix = new FirstTaskMatrix(matrixWithoutRightSide, randomRightSide);
             var randomMatrix = new FirstTaskMatrix(matrix, right);
             var actualRandomSolution = randomMatrix.Solve();
-
-            //var unitMatrix = new FirstTaskMatrix(matrixWithoutRightSide, unitRightSide);
-            var unitMatrix = new FirstTaskMatrix("1.txt");
+            double[] expRandomSolution = new double[count];
+            for (int i = count - 1; i >= 0; i--)
+                expRandomSolution[i] = actualRandomSolution[count - i - 1];
+            actualRandomSolution = expRandomSolution;
+            var unitMatrix = new FirstTaskMatrix(matrixWithoutRightSide, unitRightSide);
             var actualUnitSolution = unitMatrix.Solve();
+            //return (0, 0);
+            foreach (var x in expectRandomSolution)
+            {
+                Console.Write((x + "   "));
+            }
+            Console.WriteLine();
+            foreach (var x in actualRandomSolution)
+            {
+                Console.Write((x + "   "));
+            }
+                Console.WriteLine();
             return (AccuracyUtils.CalculateAccuracy(expectUnitSolution, actualUnitSolution, NonZeroEps), 
                 AccuracyUtils.CalculateAccuracy(expectRandomSolution, actualRandomSolution, NonZeroEps));
         }
