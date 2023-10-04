@@ -95,7 +95,6 @@ namespace Task1
             var unitMatrix = new FirstTaskMatrix(matrix, unitRightSide);
             var unitRightSideSolution = unitMatrix.Solve();
 
-
             return AccuracyUtils.CalculateAccuracy(unitRightSideSolution, expectUnitSolution, NonZeroEps);
         }
     }

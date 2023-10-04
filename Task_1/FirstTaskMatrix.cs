@@ -248,9 +248,9 @@ namespace Task1
             {
                 _solved = true;
 
+                PrintArrays();
                 FirstPhase();
                 //Console.WriteLine("FirstPhase");
-                //PrintArrays();
 
                 SecondPhase();
                 //Console.WriteLine("SecondPhase");
@@ -272,6 +272,12 @@ namespace Task1
                 //PrintArrays();
                 //Console.WriteLine("CalculatePhase");
             }
+
+            Console.WriteLine("result");
+            string line7 = "";
+            for (int i = 0; i < 10; i++)
+                line7 += string.Format("{0:f1}", _result[i]) + "\t";
+            Console.WriteLine(line7);
 
             return _result;
         }
@@ -308,7 +314,7 @@ namespace Task1
                 line6 += string.Format("{0:f1}", _e[i]) + "\t";
             Console.WriteLine(line6);
 
-
+            
         }
     }
 }
