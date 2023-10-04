@@ -9,10 +9,21 @@ namespace Task1
     {
         static void Main()
         {
+            FirstPart();
+            SecondPart();
+
+            Console.ReadKey(true);
+        }
+
+        private static void FirstPart()
+        {
             var matrix = new MatrixFromTextFile();
             Console.WriteLine($"Среднее значение оценки точности: {FindAccuracy(matrix.Count)}");
             Console.WriteLine();
+        }
 
+        private static void SecondPart()
+        {
             const int TestCount = 3;
             var testCases = new (int n, int minValue, int maxValue)[]
             {
@@ -38,8 +49,6 @@ namespace Task1
                 Console.WriteLine($"Средняя относительная погрешность системы: {accuracies.Select(x => x.UnitAccuracy).Average()}");
                 Console.WriteLine($"Среднее значение оценки точности: {accuracies.Select(x => x.RandomAccuracy).Average()}");
             }
-
-            Console.ReadKey(true);
         }
 
         const double NonZeroEps = 1e-5;
